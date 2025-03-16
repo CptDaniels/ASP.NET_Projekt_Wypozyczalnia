@@ -8,23 +8,23 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Data
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
 
-    public DbSet<Samochod> Samochody { get; set; }
-    public DbSet<Klient> Klienci { get; set; }
-    public DbSet<PozycjaWypozyczenia> PozycjeWypozyczenia { get; set; }
+    public DbSet<Car> Cars { get; set; }
+    public DbSet<Client> Clients { get; set; }
+    public DbSet<RentalItems> RentalItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<PozycjaWypozyczenia>()
-            .HasOne(p => p.Klient)
-            .WithMany(k => k.PozycjeWypozyczenia)
-            .HasForeignKey(p => p.IDKlienta);
+        modelBuilder.Entity<RentalItems>()
+            .HasOne(p => p.Client)
+            .WithMany(k => k.RentalItems)
+            .HasForeignKey(p => p.ClientID);
 
-        modelBuilder.Entity<PozycjaWypozyczenia>()
-            .HasOne(p => p.Samochod)
-            .WithMany(s => s.PozycjeWypozyczenia)
-            .HasForeignKey(p => p.IDSamochodu);
+        modelBuilder.Entity<RentalItems>()
+            .HasOne(p => p.Car)
+            .WithMany(s => s.RentalItems)
+            .HasForeignKey(p => p.CarID);
     }
 }
 
