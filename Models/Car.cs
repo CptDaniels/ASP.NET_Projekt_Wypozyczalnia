@@ -16,6 +16,23 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Models
         [Display(Name = "Niesprawny")]
         OutOfService
     }
+    public enum FuelType
+    {
+        [Display(Name = "Olej napędowy")]
+        Diesel,
+
+        [Display(Name = "Benzyna")]
+        Gasoline,
+
+        [Display(Name = "Gaz LPG")]
+        LPG,
+
+        [Display(Name = "Elektryczny")]
+        Electric,
+
+        [Display(Name = "Gaz CNG")]
+        CNG
+    }
     public class Car
     {
         [Key]
@@ -58,7 +75,9 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Models
     
         [Required]
         [Display(Name = "Rodzaj Paliwa")]
-        public string FuelType { get; set; }
+        public FuelType FuelType { get; set; }
+        [Display(Name = "Zdjęcie Samochodu")]
+        public string CarPicture { get; set; }
         //Nawigacja
     
         [Display(Name = "Pozycje Wypożyczenia")]

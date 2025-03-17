@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASP.NET_Projekt_Wypozyczalnia.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250316215052_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250317173013_InitialCreate2")]
+    partial class InitialCreate2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,15 +33,18 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CarID"));
 
+                    b.Property<string>("CarPicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("CarStatus")
                         .HasColumnType("int");
 
                     b.Property<int>("EngineCapacity")
                         .HasColumnType("int");
 
-                    b.Property<string>("FuelType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("FuelType")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("InspectionDate")
                         .HasColumnType("datetime2");
