@@ -1,92 +1,100 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ASP.NET_Projekt_Wypozyczalnia.Models;
-using ASP.NET_Projekt_Wypozyczalnia.Data;
-using Microsoft.EntityFrameworkCore;
 using ASP.NET_Projekt_Wypozyczalnia.Repositories;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
-    public class ClientController : Controller
+    public class CarController : Controller
     {
-        private readonly IClientRepository _clientRepository;
+        private readonly ICarRepository _carRepository;
 
-        public ClientController(IClientRepository clientRepository)
+        public CarController(ICarRepository carRepository)
         {
-            _clientRepository = clientRepository;
+            _carRepository = carRepository;
         }
-        //GET
+
+        // GET Odczyt
         public async Task<IActionResult> Index()
         {
-            var clients = await _clientRepository.GetAllAsync();
-            return View(clients);
+            var cars = await _carRepository.GetAllAsync();
+            return View(cars);
         }
-        //GET
+
+        // GET Tworzenie
         public IActionResult Create()
         {
             return View();
         }
-        //POST
+
+        // POST Tworzenie
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClientID,FirstName,LastName,Email,PhoneNumber,DocumentNumber,DocumentType,Address")] Client client)
+        public async Task<IActionResult> Create([Bind("CarID,Make,Model,Year,RegistrationNumber,CarStatus,Mileage,InspectionDate,InsuranceDate,EngineCapacity,FuelType,CarPicture")] Car car)
         {
             if (ModelState.IsValid)
             {
-                await _clientRepository.AddAsync(client);
+                await _carRepository.AddAsync(car);
                 return RedirectToAction(nameof(Index));
             }
-            return View(client);
+            return View(car);
         }
-        //GET
+
+        // GET Edycja
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var client = await _clientRepository.GetByIdAsync(id.Value);
-            if (client == null)
+
+            var car = await _carRepository.GetByIdAsync(id.Value);
+            if (car == null)
             {
                 return NotFound();
             }
-            return View(client);
+            return View(car);
         }
-        //POST
+
+        // POST Edycja
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ClientID,FirstName,LastName,Email,PhoneNumber,DocumentNumber,DocumentType,Address")] Client client)
+        public async Task<IActionResult> Edit(int id, [Bind("CarID,Make,Model,Year,RegistrationNumber,CarStatus,Mileage,InspectionDate,InsuranceDate,EngineCapacity,FuelType,CarPicture")] Car car)
         {
-            if (id != client.ClientID)
+            if (id != car.CarID)
             {
                 return NotFound();
             }
+
             if (ModelState.IsValid)
             {
-                await _clientRepository.UpdateAsync(client);
+                await _carRepository.UpdateAsync(car);
                 return RedirectToAction(nameof(Index));
             }
-            return View(client);
+            return View(car);
         }
-        //GET
+
+        // GET Usuwanie
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var client = await _clientRepository.GetByIdAsync(id.Value);
-            if (client == null)
+
+            var car = await _carRepository.GetByIdAsync(id.Value);
+            if (car == null)
             {
                 return NotFound();
             }
-            return View(client);
+            return View(car);
         }
-        //POST
+
+        // POST Usuwanie
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _clientRepository.DeleteAsync(id);
+            await _carRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

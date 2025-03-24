@@ -1,4 +1,5 @@
 using ASP.NET_Projekt_Wypozyczalnia.Data;
+using ASP.NET_Projekt_Wypozyczalnia.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -8,8 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ThinkpadConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PredatorConnection")));
 //"ThinkpadConnection"   "PredatorConnection"
+
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<IRentalItemsRepository, RentalItemsRepository>();
+
 
 var app = builder.Build();
 
