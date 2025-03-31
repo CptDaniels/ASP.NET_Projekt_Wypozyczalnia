@@ -1,22 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ASP.NET_Projekt_Wypozyczalnia.Models;
-using ASP.NET_Projekt_Wypozyczalnia.Repositories;
+using ASP.NET_Projekt_Wypozyczalnia.Services;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
     public class CarController : Controller
     {
-        private readonly ICarRepository _carRepository;
+        private readonly ICarService _carService;
 
-        public CarController(ICarRepository carRepository)
+        public CarController(ICarService carService)
         {
-            _carRepository = carRepository;
+            _carService = carService;
         }
 
         // GET Odczyt
         public async Task<IActionResult> Index()
         {
-            var cars = await _carRepository.GetAllAsync();
+            var cars = await _carService.GetAllCarsAsync();
             return View(cars);
         }
 
@@ -33,7 +33,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _carRepository.AddAsync(car);
+                await _carService.AddCarAsync(car);
                 return RedirectToAction(nameof(Index));
             }
             return View(car);
@@ -47,7 +47,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
                 return NotFound();
             }
 
-            var car = await _carRepository.GetByIdAsync(id.Value);
+            var car = await _carService.GetCarByIdAsync(id.Value);
             if (car == null)
             {
                 return NotFound();
@@ -67,7 +67,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 
             if (ModelState.IsValid)
             {
-                await _carRepository.UpdateAsync(car);
+                await _carService.UpdateCarAsync(car);
                 return RedirectToAction(nameof(Index));
             }
             return View(car);
@@ -81,7 +81,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
                 return NotFound();
             }
 
-            var car = await _carRepository.GetByIdAsync(id.Value);
+            var car = await _carService.GetCarByIdAsync(id.Value);
             if (car == null)
             {
                 return NotFound();
@@ -94,7 +94,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _carRepository.DeleteAsync(id);
+            await _carService.DeleteCarAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

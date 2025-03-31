@@ -1,5 +1,7 @@
 using ASP.NET_Projekt_Wypozyczalnia.Data;
 using ASP.NET_Projekt_Wypozyczalnia.Repositories;
+using ASP.NET_Projekt_Wypozyczalnia.Services;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -16,6 +18,9 @@ builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IRentalItemsRepository, RentalItemsRepository>();
 
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<IRentalItemsService, RentalItemsService>();
 
 var app = builder.Build();
 

@@ -28,7 +28,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         // GET Tworzenie
         public async Task<IActionResult> Create()
         {
-            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllAsync(), "ClientID", "FirstName");
+            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllClients(), "ClientID", "FirstName");
             ViewBag.CarID = new SelectList(await _carRepository.GetAllAsync(), "CarID", "Make");
             return View();
         }
@@ -44,7 +44,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllAsync(), "ClientID", "FirstName", rentalItem.ClientID);
+            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllClients(), "ClientID", "FirstName", rentalItem.ClientID);
             ViewBag.CarID = new SelectList(await _carRepository.GetAllAsync(), "CarID", "Make", rentalItem.CarID);
             return View(rentalItem);
         }
@@ -63,7 +63,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
                 return NotFound();
             }
 
-            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllAsync(), "ClientID", "FirstName", rentalItem.ClientID);
+            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllClients(), "ClientID", "FirstName", rentalItem.ClientID);
             ViewBag.CarID = new SelectList(await _carRepository.GetAllAsync(), "CarID", "Make", rentalItem.CarID);
             return View(rentalItem);
         }
@@ -84,7 +84,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
                 return RedirectToAction(nameof(Index));
             }
             //To jest do listy rozwijanej w widoku dać @Html.DropDownListFor
-            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllAsync(), "ClientID", "FirstName", rentalItem.ClientID);
+            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllClients(), "ClientID", "FirstName", rentalItem.ClientID);
             ViewBag.CarID = new SelectList(await _carRepository.GetAllAsync(), "CarID", "Make", rentalItem.CarID);
             return View(rentalItem);
         }

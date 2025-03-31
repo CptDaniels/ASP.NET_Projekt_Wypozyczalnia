@@ -3,6 +3,7 @@ using ASP.NET_Projekt_Wypozyczalnia.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Repositories
 {
@@ -15,9 +16,9 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Car>> GetAllAsync()
+        public async Task<IQueryable<Car>> GetAllAsync()
         {
-            return await _context.Cars.ToListAsync();
+            return await Task.FromResult(_context.Cars.AsQueryable());
         }
 
         public async Task<Car> GetByIdAsync(int id)

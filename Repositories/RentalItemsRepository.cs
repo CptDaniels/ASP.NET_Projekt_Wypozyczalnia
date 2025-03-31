@@ -15,9 +15,9 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<RentalItems>> GetAllAsync()
+        public async Task<IQueryable<RentalItems>> GetAllAsync()
         {
-            return await _context.RentalItems.ToListAsync();
+            return await Task.FromResult(_context.RentalItems.AsQueryable());
         }
 
         public async Task<RentalItems> GetByIdAsync(int id)

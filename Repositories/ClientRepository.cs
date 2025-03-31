@@ -15,19 +15,14 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Client>> GetAllAsync()
+        public Task<IQueryable<Client>> GetAllClients()
         {
-            return await _context.Clients.ToListAsync();
+            return Task.FromResult(_context.Clients.AsQueryable());
         }
 
         public async Task<Client> GetByIdAsync(int id)
         {
             return await _context.Clients.FindAsync(id);
-        }
-
-        public async Task<Client> GetByEmailAsync(string email)
-        {
-            return await _context.Clients.FirstOrDefaultAsync(c => c.Email == email);
         }
 
         public async Task AddAsync(Client client)

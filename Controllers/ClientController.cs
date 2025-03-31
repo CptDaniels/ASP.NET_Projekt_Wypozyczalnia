@@ -2,22 +2,22 @@
 using ASP.NET_Projekt_Wypozyczalnia.Models;
 using ASP.NET_Projekt_Wypozyczalnia.Data;
 using Microsoft.EntityFrameworkCore;
-using ASP.NET_Projekt_Wypozyczalnia.Repositories;
+using ASP.NET_Projekt_Wypozyczalnia.Services;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
     public class ClientController : Controller
     {
-        private readonly IClientRepository _clientRepository;
+        private readonly IClientService _clientService;
 
-        public ClientController(IClientRepository clientRepository)
+        public ClientController(IClientService clientService)
         {
-            _clientRepository = clientRepository;
+            _clientService = clientService;
         }
         //GET
         public async Task<IActionResult> Index()
         {
-            var clients = await _clientRepository.GetAllAsync();
+            var clients = await _clientService.GetAllClientsAsync();
             return View(clients);
         }
         //GET
@@ -32,7 +32,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _clientRepository.AddAsync(client);
+                await _clientService.AddClientAsync(client);
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -44,7 +44,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             {
                 return NotFound();
             }
-            var client = await _clientRepository.GetByIdAsync(id.Value);
+            var client = await _clientService.GetClientByIdAsync(id.Value);
             if (client == null)
             {
                 return NotFound();
@@ -62,7 +62,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             }
             if (ModelState.IsValid)
             {
-                await _clientRepository.UpdateAsync(client);
+                await _clientService.UpdateClientAsync(client);
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -74,7 +74,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             {
                 return NotFound();
             }
-            var client = await _clientRepository.GetByIdAsync(id.Value);
+            var client = await _clientService.GetClientByIdAsync(id.Value);
             if (client == null)
             {
                 return NotFound();
@@ -86,7 +86,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _clientRepository.DeleteAsync(id);
+            await _clientService.DeleteClientAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

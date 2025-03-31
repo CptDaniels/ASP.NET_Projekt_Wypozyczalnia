@@ -6,7 +6,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Repositories
 {
     public interface IClientRepository
     {
-        Task<IEnumerable<Client>> GetAllAsync();
+        Task<IQueryable<Client>> GetAllClients();
         Task<Client> GetByIdAsync(int id);
         Task AddAsync(Client client);
         Task UpdateAsync(Client client);
