@@ -14,10 +14,17 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         {
             _clientService = clientService;
         }
-        //GET
-        public async Task<IActionResult> Index()
+        //GET z paginacją
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
-            var clients = await _clientService.GetAllClientsAsync();
+            // Ograniczenie na pierwszej stronie
+            if (pageNumber < 1)
+            {
+                pageNumber = 1;
+            }
+            var clients = await _clientService.GetAllClientsAsync(pageNumber, pageSize);
+            ViewBag.PageNumber = pageNumber;
+            ViewBag.PageSize = pageSize;
             return View(clients);
         }
         //GET

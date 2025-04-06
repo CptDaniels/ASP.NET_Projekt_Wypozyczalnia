@@ -14,9 +14,10 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Services
             _clientRepository = clientRepository;
         }
 
-        public async Task<IQueryable<Client>> GetAllClientsAsync()
+        public async Task<IQueryable<Client>> GetAllClientsAsync(int pageNumber = 1, int pageSize = 10)
         {
-            return await _clientRepository.GetAllClients();
+            var clients = await _clientRepository.GetAllClients();
+            return clients.Skip((pageNumber - 1) * pageSize).Take(pageSize);
         }
 
         public async Task<Client> GetClientByIdAsync(int id)

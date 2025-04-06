@@ -66,3 +66,14 @@
         }
     </tbody>
 </table>
+
+@{
+    int pageNumber = ViewBag.PageNumber != null ? Convert.ToInt32(ViewBag.PageNumber) : 1;
+    int pageSize = ViewBag.PageSize != null ? Convert.ToInt32(ViewBag.PageSize) : 10;
+}
+
+<div>
+    <a asp-action="Index" asp-route-pageNumber="@(pageNumber - 1)" asp-route-pageSize="@pageSize" class="@(pageNumber <= 1 ? "disabled" : "")">Poprzednia</a>
+    <span>Strona @pageNumber</span>
+    <a asp-action="Index" asp-route-pageNumber="@(pageNumber + 1)" asp-route-pageSize="@pageSize">Następna</a>
+</div>
