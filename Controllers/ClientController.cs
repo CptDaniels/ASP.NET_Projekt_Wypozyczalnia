@@ -3,6 +3,10 @@ using ASP.NET_Projekt_Wypozyczalnia.Models;
 using ASP.NET_Projekt_Wypozyczalnia.Data;
 using Microsoft.EntityFrameworkCore;
 using ASP.NET_Projekt_Wypozyczalnia.Services;
+using ASP.NET_Projekt_Wypozyczalnia.ViewModels;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
@@ -22,10 +26,32 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             {
                 pageNumber = 1;
             }
+
             var clients = await _clientService.GetAllClientsAsync(pageNumber, pageSize);
+
+            var viewModels = clients.Select(client => new ClientViewModel
+            {
+                ClientID = client.ClientID,
+                FullName = $"{client.FirstName} {client.LastName}",
+                Email = client.Email,
+                PhoneNumber = client.PhoneNumber,
+                DocumentInfo = $"{GetDocumentName(client.DocumentType)} - {client.DocumentNumber}",
+                Address = client.Address
+            }).ToList();
+
             ViewBag.PageNumber = pageNumber;
             ViewBag.PageSize = pageSize;
-            return View(clients);
+
+            return View(viewModels);
+        }
+        private static string GetDocumentName(DocumentType documentType)
+        {
+            return documentType switch
+            {
+                DocumentType.ID => "Dowód osobisty",
+                DocumentType.DriverLicence => "Prawo jazdy",
+                _ => documentType.ToString()
+            };
         }
         //GET
         public IActionResult Create()
