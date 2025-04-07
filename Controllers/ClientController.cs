@@ -56,7 +56,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         //GET
         public IActionResult Create()
         {
-            return View();
+            return View(new ClientViewModel());
         }
         //POST
         [HttpPost]

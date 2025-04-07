@@ -52,11 +52,9 @@ namespace ASP.NET_Projekt_Wypozyczalnia.ViewModels
         [Display(Name = "Zdjęcie Samochodu")]
         public string CarPicture { get; set; }
 
-        // Dodatkowa własność do wyświetlania liczby wypożyczeń zamiast kolekcji
         [Display(Name = "Liczba Wypożyczeń")]
         public int RentalCount { get; set; }
 
-        // Opcjonalnie: pełna nazwa statusu i paliwa do wyświetlenia w UI
         [Display(Name = "Status Samochodu (Pełna Nazwa)")]
         public string CarStatusDisplay => CarStatus switch
         {
@@ -78,8 +76,6 @@ namespace ASP.NET_Projekt_Wypozyczalnia.ViewModels
             _ => "Nieznany"
         };
     }
-
-    // Enums przeniesione do ViewModel (możesz je zostawić w osobnym pliku lub w modelu)
     public enum CarStatus
     {
         [Display(Name = "Sprawny")]
