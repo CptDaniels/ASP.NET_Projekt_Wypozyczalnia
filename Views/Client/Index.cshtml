@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ASP.NET_Projekt_Wypozyczalnia.ViewModels.ClientViewModel>
+﻿@model ASP.NET_Projekt_Wypozyczalnia.ViewModels.ClientListViewModel
 
 <h1>Lista Klientów</h1>
 
@@ -9,16 +9,16 @@
 <table class="table">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.FullName)</th>
-            <th>@Html.DisplayNameFor(model => model.Email)</th>
-            <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
-            <th>@Html.DisplayNameFor(model => model.DocumentInfo)</th>
-            <th>@Html.DisplayNameFor(model => model.Address)</th>
+            <th>@Html.DisplayNameFor(model => model.Clients.First().FullName)</th>
+            <th>@Html.DisplayNameFor(model => model.Clients.First().Email)</th>
+            <th>@Html.DisplayNameFor(model => model.Clients.First().PhoneNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.Clients.First().DocumentInfo)</th>
+            <th>@Html.DisplayNameFor(model => model.Clients.First().Address)</th>
             <th>Akcje</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Clients)
         {
             <tr>
                 <td>@item.FullName</td>
@@ -36,13 +36,12 @@
     </tbody>
 </table>
 
-@{
-    int pageNumber = ViewBag.PageNumber != null ? Convert.ToInt32(ViewBag.PageNumber) : 1;
-    int pageSize = ViewBag.PageSize != null ? Convert.ToInt32(ViewBag.PageSize) : 10;
-}
-
 <div class="pagination">
-    <a asp-action="Index" asp-route-pageNumber="@(pageNumber - 1)" asp-route-pageSize="@pageSize" class="@(pageNumber <= 1 ? "disabled" : "")">Poprzednia</a>
-    <span>Strona @pageNumber</span>
-    <a asp-action="Index" asp-route-pageNumber="@(pageNumber + 1)" asp-route-pageSize="@pageSize">Następna</a>
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-pageSize="@Model.PageSize"
+       class="@(Model.PageNumber <= 1 ? "disabled" : "")">Poprzednia</a>
+
+    <span>Strona @Model.PageNumber z @Model.TotalPages</span>
+
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-pageSize="@Model.PageSize"
+       class="@(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">Następna</a>
 </div>

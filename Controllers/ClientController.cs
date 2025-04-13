@@ -21,37 +21,24 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         //GET z paginacją
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
-            // Ograniczenie na pierwszej stronie
             if (pageNumber < 1)
             {
                 pageNumber = 1;
             }
 
-            var clients = await _clientService.GetAllClientsAsync(pageNumber, pageSize);
+            var (clients, totalCount) = await _clientService.GetAllClientsAsync(pageNumber, pageSize);
 
-            var viewModels = clients.Select(client => new ClientViewModel
+            var viewModels = clients.Select(ClientViewModel.FromClient).ToList();
+
+            var model = new ClientListViewModel
             {
-                ClientID = client.ClientID,
-                FullName = $"{client.FirstName} {client.LastName}",
-                Email = client.Email,
-                PhoneNumber = client.PhoneNumber,
-                DocumentInfo = $"{GetDocumentName(client.DocumentType)} - {client.DocumentNumber}",
-                Address = client.Address
-            }).ToList();
-
-            ViewBag.PageNumber = pageNumber;
-            ViewBag.PageSize = pageSize;
-
-            return View(viewModels);
-        }
-        private static string GetDocumentName(DocumentType documentType)
-        {
-            return documentType switch
-            {
-                DocumentType.ID => "Dowód osobisty",
-                DocumentType.DriverLicence => "Prawo jazdy",
-                _ => documentType.ToString()
+                Clients = viewModels,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount
             };
+
+            return View(model);
         }
         //GET
         public IActionResult Create()
