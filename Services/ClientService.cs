@@ -16,7 +16,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Services
 
         public async Task<(List<Client> Clients, int TotalCount)> GetAllClientsAsync(int pageNumber = 1, int pageSize = 10)
         {
-            var clientsQuery = await _clientRepository.GetAllClients(); // Zwraca IQueryable<Client>
+            var clientsQuery = await _clientRepository.GetAllClients();
 
             int totalCount = clientsQuery.Count();
 

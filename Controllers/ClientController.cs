@@ -7,16 +7,20 @@ using ASP.NET_Projekt_Wypozyczalnia.ViewModels;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using FluentValidation;
+using ASP.NET_Projekt_Wypozyczalnia.Validators;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
     public class ClientController : Controller
     {
         private readonly IClientService _clientService;
+        private readonly IValidator<Client> _clientValidator;
 
-        public ClientController(IClientService clientService)
+        public ClientController(IClientService clientService, IValidator<Client> clientValidator)
         {
             _clientService = clientService;
+            _clientValidator = clientValidator;
         }
         //GET z paginacją
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
@@ -43,19 +47,27 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         //GET
         public IActionResult Create()
         {
-            return View(new ClientViewModel());
+            return View(new Client());
         }
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClientID,FirstName,LastName,Email,PhoneNumber,DocumentNumber,DocumentType,Address")] Client client)
+        public async Task<IActionResult> Create(Client client)
         {
-            if (ModelState.IsValid)
+
+            var validationResult = await _clientValidator.ValidateAsync(client);
+
+            if (!validationResult.IsValid)
             {
-                await _clientService.AddClientAsync(client);
-                return RedirectToAction(nameof(Index));
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+                return View(client);
             }
-            return View(client);
+
+            await _clientService.AddClientAsync(client);
+            return RedirectToAction(nameof(Index));
         }
         //GET
         public async Task<IActionResult> Edit(int? id)
@@ -80,12 +92,21 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             {
                 return NotFound();
             }
-            if (ModelState.IsValid)
+    
+
+            var validationResult = await _clientValidator.ValidateAsync(client);
+    
+            if (!validationResult.IsValid)
             {
-                await _clientService.UpdateClientAsync(client);
-                return RedirectToAction(nameof(Index));
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+                return View(client);
             }
-            return View(client);
+
+            await _clientService.UpdateClientAsync(client);
+            return RedirectToAction(nameof(Index));
         }
         //GET
         public async Task<IActionResult> Delete(int? id)

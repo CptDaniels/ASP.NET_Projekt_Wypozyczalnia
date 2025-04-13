@@ -45,6 +45,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.ViewModels
             };
         }
 
+
         private static string GetDocumentName(DocumentType documentType)
         {
             return documentType switch

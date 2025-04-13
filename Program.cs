@@ -1,6 +1,10 @@
 using ASP.NET_Projekt_Wypozyczalnia.Data;
+using ASP.NET_Projekt_Wypozyczalnia.Models;
 using ASP.NET_Projekt_Wypozyczalnia.Repositories;
 using ASP.NET_Projekt_Wypozyczalnia.Services;
+using ASP.NET_Projekt_Wypozyczalnia.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +25,10 @@ builder.Services.AddScoped<IRentalItemsRepository, RentalItemsRepository>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IRentalItemsService, RentalItemsService>();
+
+//Walidacja
+builder.Services.AddScoped<IValidator<Client>, ClientValidator>();
+
 
 var app = builder.Build();
 
