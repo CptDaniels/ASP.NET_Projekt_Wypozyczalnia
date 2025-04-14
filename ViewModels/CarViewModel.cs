@@ -55,26 +55,6 @@ namespace ASP.NET_Projekt_Wypozyczalnia.ViewModels
         [Display(Name = "Liczba Wypożyczeń")]
         public int RentalCount { get; set; }
 
-        [Display(Name = "Status Samochodu (Pełna Nazwa)")]
-        public string CarStatusDisplay => CarStatus switch
-        {
-            CarStatus.Operational => "Sprawny",
-            CarStatus.UnderRepair => "W Naprawie",
-            CarStatus.Damaged => "Uszkodzony",
-            CarStatus.OutOfService => "Niesprawny",
-            _ => "Nieznany"
-        };
-
-        [Display(Name = "Rodzaj Paliwa (Pełna Nazwa)")]
-        public string FuelTypeDisplay => FuelType switch
-        {
-            FuelType.Diesel => "Olej napędowy",
-            FuelType.Gasoline => "Benzyna",
-            FuelType.LPG => "Gaz LPG",
-            FuelType.Electric => "Elektryczny",
-            FuelType.CNG => "Gaz CNG",
-            _ => "Nieznany"
-        };
     }
     public enum CarStatus
     {
