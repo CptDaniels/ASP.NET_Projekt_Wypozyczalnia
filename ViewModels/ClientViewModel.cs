@@ -31,29 +31,5 @@ namespace ASP.NET_Projekt_Wypozyczalnia.ViewModels
         [StringLength(200, ErrorMessage = "Adres nie może przekraczać 200 znaków.")]
         [Display(Name = "Adres")]
         public string Address { get; set; }
-
-        public static ClientViewModel FromClient(Client client)
-        {
-            return new ClientViewModel
-            {
-                ClientID = client.ClientID,
-                FullName = $"{client.FirstName} {client.LastName}",
-                Email = client.Email,
-                PhoneNumber = client.PhoneNumber,
-                DocumentInfo = $"{GetDocumentName(client.DocumentType)} - {client.DocumentNumber}",
-                Address = client.Address
-            };
-        }
-
-
-        private static string GetDocumentName(DocumentType documentType)
-        {
-            return documentType switch
-            {
-                DocumentType.ID => "Dowód osobisty",
-                DocumentType.DriverLicence => "Prawo jazdy",
-                _ => documentType.ToString()
-            };
-        }
     }
 }

@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using FluentValidation;
 using ASP.NET_Projekt_Wypozyczalnia.Validators;
+using Mapster;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
@@ -32,7 +33,8 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 
             var (clients, totalCount) = await _clientService.GetAllClientsAsync(pageNumber, pageSize);
 
-            var viewModels = clients.Select(ClientViewModel.FromClient).ToList();
+            //var viewModels = clients.Select(ClientViewModel.FromClient).ToList();
+            var viewModels = clients.Adapt<List<ClientViewModel>>();
 
             var model = new ClientListViewModel
             {

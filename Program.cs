@@ -29,6 +29,9 @@ builder.Services.AddScoped<IRentalItemsService, RentalItemsService>();
 //Walidacja
 builder.Services.AddScoped<IValidator<Client>, ClientValidator>();
 
+MapsterConfig.Configure();
+
+
 
 var app = builder.Build();
 
