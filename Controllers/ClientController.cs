@@ -10,9 +10,11 @@ using System.Reflection;
 using FluentValidation;
 using ASP.NET_Projekt_Wypozyczalnia.Validators;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
+    [Authorize]
     public class ClientController : Controller
     {
         private readonly IClientService _clientService;
@@ -24,6 +26,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             _clientValidator = clientValidator;
         }
         //GET z paginacją
+        [AllowAnonymous]
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
             if (pageNumber < 1)
@@ -74,6 +77,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         //GET
         public async Task<IActionResult> Edit(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();

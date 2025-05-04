@@ -2,9 +2,11 @@
 using ASP.NET_Projekt_Wypozyczalnia.Models;
 using ASP.NET_Projekt_Wypozyczalnia.Repositories;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
+    [Authorize]
     public class RentalItemsController : Controller
     {
         private readonly IRentalItemsRepository _rentalItemsRepository;

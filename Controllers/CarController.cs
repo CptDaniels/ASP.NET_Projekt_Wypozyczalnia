@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ASP.NET_Projekt_Wypozyczalnia.Models;
 using ASP.NET_Projekt_Wypozyczalnia.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
+    [Authorize]
     public class CarController : Controller
     {
         private readonly ICarService _carService;
@@ -14,6 +17,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         }
 
         // GET Odczyt
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var cars = await _carService.GetAllCarsAsync();
