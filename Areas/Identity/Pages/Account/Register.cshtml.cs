@@ -10,6 +10,10 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using ASP.NET_Projekt_Wypozyczalnia.Data;
+using ASP.NET_Projekt_Wypozyczalnia.Models;
+using ASP.NET_Projekt_Wypozyczalnia.Services;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -29,13 +33,19 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IClientService _clientService;
+        private readonly ApplicationDbContext _context;
+        private readonly IValidator<Client> _clientValidator;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IClientService clientService,
+            ApplicationDbContext context,
+            IValidator<Client> clientValidator)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +53,9 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _clientService = clientService;
+            _context = context;
+            _clientValidator = clientValidator;
         }
 
         /// <summary>
@@ -68,6 +81,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Areas.Identity.Pages.Account
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        /// 
         public class InputModel
         {
             /// <summary>
@@ -97,6 +111,30 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+
+            [Required]
+            [Display(Name = "First name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Last name")]
+            public string LastName { get; set; }
+            [Required]
+            [Display(Name = "Numer telefonu")]
+            public string PhoneNumber { get; set; }
+
+            [Required]
+            [Display(Name = "Numer dokumentu")]
+            public string DocumentNumber { get; set; }
+
+            [Required]
+            [Display(Name = "Typ dokumentu")]
+            public DocumentType DocumentType { get; set; }
+
+            [Required]
+            [Display(Name = "Adres Zamieszkania")]
+            public string Address { get; set; }
         }
 
 
@@ -117,10 +155,36 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                await _userManager.AddToRoleAsync(user, "Client");
+
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    // Stworzenie klienta
+                    var client = new Client
+                    {
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName,
+                        Email = Input.Email,
+                        PhoneNumber = Input.PhoneNumber,
+                        DocumentNumber = Input.DocumentNumber,
+                        DocumentType = Input.DocumentType,
+                        Address = Input.Address,
+                    };
+                    // Walidacja klienta
+                    var validationResult = await _clientValidator.ValidateAsync(client);
+
+                    if (!validationResult.IsValid)
+                    {
+                        foreach (var error in validationResult.Errors)
+                        {
+                            ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                        }
+
+                        return Page();
+                    }
+                    await _clientService.AddClientAsync(client);
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

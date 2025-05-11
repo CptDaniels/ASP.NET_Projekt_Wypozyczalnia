@@ -1,4 +1,5 @@
 ﻿@page
+@using ASP.NET_Projekt_Wypozyczalnia.Models
 @model RegisterModel
 
 <div class="row justify-content-center">
@@ -24,6 +25,36 @@
                 <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="hasło" />
                 <label asp-for="Input.ConfirmPassword">Potwierdź hasło</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.FirstName"></label>
+                <input asp-for="Input.FirstName" class="form-control" />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.LastName"></label>
+                <input asp-for="Input.LastName" class="form-control" />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.PhoneNumber" class="control-label"></label>
+                <input asp-for="Input.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.DocumentNumber" class="control-label"></label>
+                <input asp-for="Input.DocumentNumber" class="form-control" />
+                <span asp-validation-for="Input.DocumentNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.DocumentType" class="control-label"></label>
+                <select asp-for="Input.DocumentType" class="form-control" asp-items="Html.GetEnumSelectList<DocumentType>()"></select>
+                <span asp-validation-for="Input.DocumentType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Address" class="control-label"></label>
+                <input asp-for="Input.Address" class="form-control" />
+                <span asp-validation-for="Input.Address" class="text-danger"></span>
             </div>
 
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Zarejestruj się</button>

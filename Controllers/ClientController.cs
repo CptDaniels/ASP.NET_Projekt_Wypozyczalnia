@@ -11,6 +11,7 @@ using FluentValidation;
 using ASP.NET_Projekt_Wypozyczalnia.Validators;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
@@ -19,14 +20,17 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
     {
         private readonly IClientService _clientService;
         private readonly IValidator<Client> _clientValidator;
+        private readonly ApplicationDbContext _context;
 
-        public ClientController(IClientService clientService, IValidator<Client> clientValidator)
+        public ClientController(IClientService clientService, IValidator<Client> clientValidator, ApplicationDbContext context)
         {
             _clientService = clientService;
             _clientValidator = clientValidator;
+            _context = context;
         }
         //GET z paginacją
         [AllowAnonymous]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
             if (pageNumber < 1)
@@ -50,6 +54,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             return View(model);
         }
         //GET
+        [Authorize(Roles = "Admin,Manager")]
         public IActionResult Create()
         {
             return View(new Client());
@@ -57,6 +62,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create(Client client)
         {
 
@@ -75,46 +81,96 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             return RedirectToAction(nameof(Index));
         }
         //GET
-        public async Task<IActionResult> Edit(int? id)
+        [Authorize(Roles = "Client")]
+        [Route("Client/Edit")]
+        public async Task<IActionResult> Edit()
         {
+            var email = User.Identity?.Name;
 
-            if (id == null)
+            if (string.IsNullOrEmpty(email))
             {
-                return NotFound();
+                return Unauthorized();
             }
-            var client = await _clientService.GetClientByIdAsync(id.Value);
+
+            var client = await _context.Clients
+                .AsNoTracking()
+                .SingleOrDefaultAsync(c => c.Email == email);
+
             if (client == null)
             {
                 return NotFound();
             }
+
             return View(client);
         }
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ClientID,FirstName,LastName,Email,PhoneNumber,DocumentNumber,DocumentType,Address")] Client client)
+        [Authorize(Roles = "Client")]
+        [Route("Client/Edit")]
+        public async Task<IActionResult> Edit(Client formModel)
         {
-            if (id != client.ClientID)
-            {
-                return NotFound();
-            }
-    
+            var email = User.Identity?.Name;
+            if (string.IsNullOrEmpty(email))
+                return Unauthorized();
 
-            var validationResult = await _clientValidator.ValidateAsync(client);
-    
+            var existingClient = await _context.Clients
+                .SingleOrDefaultAsync(c => c.Email == email);
+            if (existingClient == null)
+                return NotFound();
+
+            existingClient.FirstName = formModel.FirstName;
+            existingClient.LastName = formModel.LastName;
+            existingClient.PhoneNumber = formModel.PhoneNumber;
+            existingClient.DocumentNumber = formModel.DocumentNumber;
+            existingClient.DocumentType = formModel.DocumentType;
+            existingClient.Address = formModel.Address;
+
+            var validationResult = await _clientValidator.ValidateAsync(existingClient);
             if (!validationResult.IsValid)
             {
                 foreach (var error in validationResult.Errors)
                 {
                     ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                 }
-                return View(client);
+
+                return View(existingClient);
+            }
+
+            await _clientService.UpdateClientAsync(existingClient);
+            return RedirectToAction(nameof(Edit));
+        }
+        //Widok edycji administratora
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var client = await _clientService.GetClientByIdAsync(id);
+            if (client == null) return NotFound();
+            return View("EditAdmin", client);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Edit(int id, [Bind("ClientID,FirstName,LastName,Email,PhoneNumber,DocumentNumber,DocumentType,Address")] Client client)
+        {
+            if (id != client.ClientID) return BadRequest();
+
+            var validationResult = await _clientValidator.ValidateAsync(client);
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+                return View("EditAdmin", client);
             }
 
             await _clientService.UpdateClientAsync(client);
             return RedirectToAction(nameof(Index));
         }
         //GET
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -131,6 +187,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         //POST
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _clientService.DeleteClientAsync(id);
