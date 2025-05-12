@@ -21,6 +21,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         }
 
         // GET Odczyt
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Index()
         {
             var rentalItems = await _rentalItemsRepository.GetAllAsync();
@@ -28,6 +29,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         }
 
         // GET Tworzenie
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create()
         {
             ViewBag.ClientID = new SelectList(await _clientRepository.GetAllClients(), "ClientID", "FirstName");
@@ -38,6 +40,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         // POST Tworzenie
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Create([Bind("RentalID,ClientID,CarID,RentalDate,ReturnDate,ExpectedReturnDate,RentalStatus")] RentalItems rentalItem)
         {
             if (ModelState.IsValid)
@@ -52,6 +55,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         }
 
         // GET Edycja
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,6 +77,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         // POST Edycja
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("RentalID,ClientID,CarID,RentalDate,ReturnDate,ExpectedReturnDate,RentalStatus")] RentalItems rentalItem)
         {
             if (id != rentalItem.RentalID)
@@ -92,6 +97,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         }
 
         // GET Usuwanie
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -110,6 +116,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         // POST Usuwanie
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _rentalItemsRepository.DeleteAsync(id);

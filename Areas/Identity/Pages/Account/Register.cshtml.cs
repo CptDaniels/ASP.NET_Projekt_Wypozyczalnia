@@ -145,78 +145,74 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Areas.Identity.Pages.Account
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+{
+        returnUrl ??= Url.Content("~/");
+        ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        if (ModelState.IsValid)
         {
-            returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+            var client = new Client
             {
-                var user = CreateUser();
+                FirstName = Input.FirstName,
+                LastName = Input.LastName,
+                Email = Input.Email,
+                PhoneNumber = Input.PhoneNumber,
+                DocumentNumber = Input.DocumentNumber,
+                DocumentType = Input.DocumentType,
+                Address = Input.Address,
+            };
+            var validationResult = await _clientValidator.ValidateAsync(client);
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                await _userManager.AddToRoleAsync(user, "Client");
-
-
-                if (result.Succeeded)
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-                    // Stworzenie klienta
-                    var client = new Client
-                    {
-                        FirstName = Input.FirstName,
-                        LastName = Input.LastName,
-                        Email = Input.Email,
-                        PhoneNumber = Input.PhoneNumber,
-                        DocumentNumber = Input.DocumentNumber,
-                        DocumentType = Input.DocumentType,
-                        Address = Input.Address,
-                    };
-                    // Walidacja klienta
-                    var validationResult = await _clientValidator.ValidateAsync(client);
-
-                    if (!validationResult.IsValid)
-                    {
-                        foreach (var error in validationResult.Errors)
-                        {
-                            ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                        }
-
-                        return Page();
-                    }
-                    await _clientService.AddClientAsync(client);
-
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                 }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                return Page();
             }
 
-            // If we got this far, something failed, redisplay form
-            return Page();
+            var user = CreateUser();
+
+            await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+            var result = await _userManager.CreateAsync(user, Input.Password);
+            await _userManager.AddToRoleAsync(user, "Client");
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User created a new account with password.");
+                await _clientService.AddClientAsync(client);
+
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    protocol: Request.Scheme);
+
+                await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                {
+                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                }
+                else
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
+                }
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
         }
+
+        return Page();
+    }
 
         private IdentityUser CreateUser()
         {

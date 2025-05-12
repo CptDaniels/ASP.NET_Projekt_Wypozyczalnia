@@ -26,13 +26,21 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Validators
                 .NotEmpty().WithMessage("Numer telefonu jest wymagany.")
                 .Matches(@"^\+?\d{9,12}$").WithMessage("Numer telefonu musi mieć od 9 do 12 cyfr i może zaczynać się od '+'.");
 
-            RuleFor(x => x.DocumentNumber)
-                .NotEmpty().WithMessage("Numer dokumentu jest wymagany.")
-                .Length(1, 20).WithMessage("Numer dokumentu nie może być dłuższy niż 20 znaków.")
-                .When(x => x.DocumentType == DocumentType.ID)
-                .Matches(@"^[A-Z]{3}\d{6}$").WithMessage("Numer dowodu osobistego powinien mieć format ABC123456.")
-                .When(x => x.DocumentType == DocumentType.DriverLicence)
-                .Matches(@"^\d{5}\/\d{2}\/\d{4}$").WithMessage("Numer prawa jazdy powinien mieć format 12345/12/2023.");
+            When(x => x.DocumentType == DocumentType.ID, () =>
+            {
+                RuleFor(x => x.DocumentNumber)
+                    .NotEmpty().WithMessage("Numer dokumentu jest wymagany.")
+                    .Length(1, 20).WithMessage("Numer dokumentu nie może być dłuższy niż 20 znaków.")
+                    .Matches(@"^[A-Z]{3}\d{6}$").WithMessage("Numer dowodu osobistego powinien mieć format ABC123456.");
+            });
+
+            When(x => x.DocumentType == DocumentType.DriverLicence, () =>
+            {
+                RuleFor(x => x.DocumentNumber)
+                    .NotEmpty().WithMessage("Numer dokumentu jest wymagany.")
+                    .Length(1, 20).WithMessage("Numer dokumentu nie może być dłuższy niż 20 znaków.")
+                    .Matches(@"^\d{5}\/\d{2}\/\d{4}$").WithMessage("Numer prawa jazdy powinien mieć format 12345/12/2023.");
+            });
 
             RuleFor(x => x.DocumentType)
                 .IsInEnum().WithMessage("Nieprawidłowy typ dokumentu.");

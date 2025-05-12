@@ -25,6 +25,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         }
 
         // GET Tworzenie
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -33,6 +34,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         // POST Tworzenie
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("CarID,Make,Model,Year,RegistrationNumber,CarStatus,Mileage,InspectionDate,InsuranceDate,EngineCapacity,FuelType,CarPicture")] Car car)
         {
             if (ModelState.IsValid)
@@ -44,6 +46,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         }
 
         // GET Edycja
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -62,6 +65,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         // POST Edycja
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("CarID,Make,Model,Year,RegistrationNumber,CarStatus,Mileage,InspectionDate,InsuranceDate,EngineCapacity,FuelType,CarPicture")] Car car)
         {
             if (id != car.CarID)
@@ -78,6 +82,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         }
 
         // GET Usuwanie
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -96,6 +101,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         // POST Usuwanie
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _carService.DeleteCarAsync(id);

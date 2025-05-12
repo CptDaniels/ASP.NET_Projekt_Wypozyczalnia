@@ -1,4 +1,4 @@
-using ASP.NET_Projekt_Wypozyczalnia.Data;
+﻿using ASP.NET_Projekt_Wypozyczalnia.Data;
 using ASP.NET_Projekt_Wypozyczalnia.Models;
 using ASP.NET_Projekt_Wypozyczalnia.Repositories;
 using ASP.NET_Projekt_Wypozyczalnia.Services;
@@ -78,6 +78,7 @@ async Task SeedRoles(IServiceProvider services)
 {
     using var scope = services.CreateScope();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
     string[] roles = { "Client", "Manager", "Admin" };
 
@@ -87,5 +88,33 @@ async Task SeedRoles(IServiceProvider services)
         {
             await roleManager.CreateAsync(new IdentityRole(role));
         }
+    }
+    //Admin
+    var adminEmail = "admin@email.com";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new IdentityUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+        await userManager.CreateAsync(adminUser, "Admin123!");
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
+    //Manager
+    var managerEmail = "manager@localhost";
+    var managerUser = await userManager.FindByEmailAsync(managerEmail);
+    if (managerUser == null)
+    {
+        managerUser = new IdentityUser
+        {
+            UserName = managerEmail,
+            Email = managerEmail,
+            EmailConfirmed = true
+        };
+        await userManager.CreateAsync(managerUser, "Admin123!");
+        await userManager.AddToRoleAsync(managerUser, "Manager");
     }
 }

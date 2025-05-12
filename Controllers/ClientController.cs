@@ -54,7 +54,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             return View(model);
         }
         //GET
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View(new Client());
@@ -62,7 +62,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(Client client)
         {
 
@@ -81,96 +81,49 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             return RedirectToAction(nameof(Index));
         }
         //GET
-        [Authorize(Roles = "Client")]
-        [Route("Client/Edit")]
-        public async Task<IActionResult> Edit()
+        [Authorize(Roles = "Admin,Manager")]
+        public async Task<IActionResult> Edit(int? id)
         {
-            var email = User.Identity?.Name;
 
-            if (string.IsNullOrEmpty(email))
+            if (id == null)
             {
-                return Unauthorized();
+                return NotFound();
             }
-
-            var client = await _context.Clients
-                .AsNoTracking()
-                .SingleOrDefaultAsync(c => c.Email == email);
-
+            var client = await _clientService.GetClientByIdAsync(id.Value);
             if (client == null)
             {
                 return NotFound();
             }
-
             return View(client);
         }
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Client")]
-        [Route("Client/Edit")]
-        public async Task<IActionResult> Edit(Client formModel)
-        {
-            var email = User.Identity?.Name;
-            if (string.IsNullOrEmpty(email))
-                return Unauthorized();
-
-            var existingClient = await _context.Clients
-                .SingleOrDefaultAsync(c => c.Email == email);
-            if (existingClient == null)
-                return NotFound();
-
-            existingClient.FirstName = formModel.FirstName;
-            existingClient.LastName = formModel.LastName;
-            existingClient.PhoneNumber = formModel.PhoneNumber;
-            existingClient.DocumentNumber = formModel.DocumentNumber;
-            existingClient.DocumentType = formModel.DocumentType;
-            existingClient.Address = formModel.Address;
-
-            var validationResult = await _clientValidator.ValidateAsync(existingClient);
-            if (!validationResult.IsValid)
-            {
-                foreach (var error in validationResult.Errors)
-                {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                }
-
-                return View(existingClient);
-            }
-
-            await _clientService.UpdateClientAsync(existingClient);
-            return RedirectToAction(nameof(Edit));
-        }
-        //Widok edycji administratora
-        [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var client = await _clientService.GetClientByIdAsync(id);
-            if (client == null) return NotFound();
-            return View("EditAdmin", client);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("ClientID,FirstName,LastName,Email,PhoneNumber,DocumentNumber,DocumentType,Address")] Client client)
         {
-            if (id != client.ClientID) return BadRequest();
+            if (id != client.ClientID)
+            {
+                return NotFound();
+            }
+    
 
             var validationResult = await _clientValidator.ValidateAsync(client);
+    
             if (!validationResult.IsValid)
             {
                 foreach (var error in validationResult.Errors)
                 {
                     ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                 }
-                return View("EditAdmin", client);
+                return View(client);
             }
 
             await _clientService.UpdateClientAsync(client);
             return RedirectToAction(nameof(Index));
         }
         //GET
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -187,7 +140,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         //POST
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _clientService.DeleteClientAsync(id);
