@@ -11,6 +11,7 @@ using FluentValidation;
 using ASP.NET_Projekt_Wypozyczalnia.Validators;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
@@ -19,14 +20,17 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
     {
         private readonly IClientService _clientService;
         private readonly IValidator<Client> _clientValidator;
+        private readonly ApplicationDbContext _context;
 
-        public ClientController(IClientService clientService, IValidator<Client> clientValidator)
+        public ClientController(IClientService clientService, IValidator<Client> clientValidator, ApplicationDbContext context)
         {
             _clientService = clientService;
             _clientValidator = clientValidator;
+            _context = context;
         }
         //GET z paginacją
         [AllowAnonymous]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
             if (pageNumber < 1)
@@ -50,6 +54,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             return View(model);
         }
         //GET
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View(new Client());
@@ -57,6 +62,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(Client client)
         {
 
@@ -75,6 +81,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             return RedirectToAction(nameof(Index));
         }
         //GET
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int? id)
         {
 
@@ -92,6 +99,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Edit(int id, [Bind("ClientID,FirstName,LastName,Email,PhoneNumber,DocumentNumber,DocumentType,Address")] Client client)
         {
             if (id != client.ClientID)
@@ -115,6 +123,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             return RedirectToAction(nameof(Index));
         }
         //GET
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -131,6 +140,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         //POST
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _clientService.DeleteClientAsync(id);

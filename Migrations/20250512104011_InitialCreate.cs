@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ASP.NET_Projekt_Wypozyczalnia.Migrations
 {
     /// <inheritdoc />
-    public partial class DodanieIdentity : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,6 +48,48 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cars",
+                columns: table => new
+                {
+                    CarID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Make = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    RegistrationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CarStatus = table.Column<int>(type: "int", nullable: false),
+                    Mileage = table.Column<int>(type: "int", nullable: false),
+                    InspectionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    InsuranceDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EngineCapacity = table.Column<int>(type: "int", nullable: false),
+                    FuelType = table.Column<int>(type: "int", nullable: false),
+                    CarPicture = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cars", x => x.CarID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    ClientID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DocumentNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DocumentType = table.Column<int>(type: "int", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.ClientID);
                 });
 
             migrationBuilder.CreateTable(
@@ -96,8 +138,8 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -141,8 +183,8 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -153,6 +195,36 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RentalItems",
+                columns: table => new
+                {
+                    RentalID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientID = table.Column<int>(type: "int", nullable: false),
+                    CarID = table.Column<int>(type: "int", nullable: false),
+                    RentalDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpectedReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RentalStatus = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RentalItems", x => x.RentalID);
+                    table.ForeignKey(
+                        name: "FK_RentalItems_Cars_CarID",
+                        column: x => x.CarID,
+                        principalTable: "Cars",
+                        principalColumn: "CarID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RentalItems_Clients_ClientID",
+                        column: x => x.ClientID,
+                        principalTable: "Clients",
+                        principalColumn: "ClientID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -194,6 +266,16 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentalItems_CarID",
+                table: "RentalItems",
+                column: "CarID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RentalItems_ClientID",
+                table: "RentalItems",
+                column: "ClientID");
         }
 
         /// <inheritdoc />
@@ -215,10 +297,19 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "RentalItems");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Cars");
+
+            migrationBuilder.DropTable(
+                name: "Clients");
         }
     }
 }
