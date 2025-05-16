@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Models
 {
@@ -77,7 +78,10 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Models
         [Display(Name = "Rodzaj Paliwa")]
         public FuelType FuelType { get; set; }
         [Display(Name = "Zdjęcie Samochodu")]
-        public string CarPicture { get; set; }
+        public string? ImagePath { get; set; }
+
+        [NotMapped]
+        public IFormFile? ImageFile { get; set; }
         //Nawigacja
     
         [Display(Name = "Pozycje Wypożyczenia")]

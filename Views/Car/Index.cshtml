@@ -33,10 +33,20 @@
                 <td>@car.Make</td>
                 <td>@car.Model</td>
                 <td>@car.Year</td>
-                <td>@car.RegistrationNumber</td>
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    <td>@car.RegistrationNumber</td>
+                }
                 <td>@car.CarStatus</td>
                 <td>@car.FuelType</td>
-                <td>@car.Mileage</td>
+                @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                {
+                    <td>@car.Mileage</td>
+                }
+                @if (!string.IsNullOrEmpty(car.ImagePath))
+                {
+                    <img src="@car.ImagePath" alt="Zdjęcie" width="100" />
+                }
                 <td>
                     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                     {
