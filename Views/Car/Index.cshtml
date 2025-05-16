@@ -1,0 +1,53 @@
+﻿@model IEnumerable<ASP.NET_Projekt_Wypozyczalnia.Models.Car>
+
+@{
+    ViewData["Title"] = "Samochody";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-primary">Dodaj Samochód</a>
+    }
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Marka</th>
+            <th>Model</th>
+            <th>Rok</th>
+            <th>Numer Rej.</th>
+            <th>Status</th>
+            <th>Paliwo</th>
+            <th>Przebieg</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var car in Model)
+        {
+            <tr>
+                <td>@car.Make</td>
+                <td>@car.Model</td>
+                <td>@car.Year</td>
+                <td>@car.RegistrationNumber</td>
+                <td>@car.CarStatus</td>
+                <td>@car.FuelType</td>
+                <td>@car.Mileage</td>
+                <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@car.CarID">Edytuj</a>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@car.CarID">Usuń</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

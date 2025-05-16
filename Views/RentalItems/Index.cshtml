@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ASP.NET_Projekt_Wypozyczalnia.Models.RentalItems>
+
+@{
+    ViewData["Title"] = "Lista Wypożyczeń";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nowe Wypożyczenie</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Klient</th>
+            <th>Samochód</th>
+            <th>Data Wypożyczenia</th>
+            <th>Data Zwrotu</th>
+            <th>Przewidywana Data Zwrotu</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Client.FirstName</td>
+                <td>@item.Car.Make</td>
+                <td>@item.RentalDate.ToShortDateString()</td>
+                <td>@item.ReturnDate?.ToShortDateString()</td>
+                <td>@item.ExpectedReturnDate.ToShortDateString()</td>
+                <td>@item.RentalStatus</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.RentalID">Edytuj</a> |
+                    <a asp-action="Delete" asp-route-id="@item.RentalID">Usuń</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
