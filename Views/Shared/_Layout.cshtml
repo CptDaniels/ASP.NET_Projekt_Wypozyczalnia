@@ -11,6 +11,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ASP.NET_Projekt_Wypozyczalnia</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/sbadmin/css/sb-admin-2.min.css" rel="stylesheet" />
+    <link href="~/sbadmin/vendor/fontawesome-free/css/all.min.css"
+          rel="stylesheet"
+          type="text/css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ASP.NET_Projekt_Wypozyczalnia.styles.css" asp-append-version="true" />
 </head>
@@ -43,9 +47,18 @@
                     </ul>
 
                     <ul class="navbar-nav ms-auto d-flex flex-row gap-2 align-items-center">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Dashboard">
+                                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+                        }
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item text-white">Witaj, @User.Identity.Name!</li>
+                            <li class="nav-item text-white">Witaj, @UserManager.GetUserName(User)!</li>
                             <li>
                                 <form asp-area="Identity" asp-page="/Account/Logout" method="post">
                                     <button type="submit" class="btn btn-outline-light btn-sm">Wyloguj</button>
@@ -54,8 +67,8 @@
                         }
                         else
                         {
-                            <li><a class="btn btn-outline-light btn-sm" asp-page="/Account/Login">Logowanie</a></li>
-                            <li><a class="btn btn-light btn-sm" asp-page="/Account/Register">Rejestracja</a></li>
+                            <li><a class="btn btn-outline-light btn-sm" asp-area="Identity" asp-page="/Account/Login">Logowanie</a></li>
+                            <li><a class="btn btn-light btn-sm" asp-area="Identity" asp-page="/Account/Register">Rejestracja</a></li>
                         }
                     </ul>
                 </div>

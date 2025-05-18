@@ -39,9 +39,6 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Migrations
                     b.Property<int>("FuelType")
                         .HasColumnType("int");
 
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("InspectionDate")
                         .HasColumnType("datetime2");
 

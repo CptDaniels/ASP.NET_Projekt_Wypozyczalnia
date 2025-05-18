@@ -3,37 +3,44 @@ using ASP.NET_Projekt_Wypozyczalnia.Models;
 using ASP.NET_Projekt_Wypozyczalnia.Repositories;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using ASP.NET_Projekt_Wypozyczalnia.Services;
+using System.Drawing.Printing;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
     [Authorize]
     public class RentalItemsController : Controller
     {
-        private readonly IRentalItemsRepository _rentalItemsRepository;
-        private readonly IClientRepository _clientRepository;
-        private readonly ICarRepository _carRepository;
+        private readonly IRentalItemsService _rentalItemsservice;
+        private readonly ICarService _carService;
+        private readonly IClientService _clientService; 
 
-        public RentalItemsController(IRentalItemsRepository rentalItemsRepository, IClientRepository clientRepository, ICarRepository carRepository)
+        public RentalItemsController(IRentalItemsService rentalItemsService, IClientService clientService,ICarService carService)
         {
-            _rentalItemsRepository = rentalItemsRepository;
-            _clientRepository = clientRepository;
-            _carRepository = carRepository;
+            _clientService = clientService;
+            _carService = carService;
+            _rentalItemsservice = rentalItemsService;
         }
 
         // GET Odczyt
         [Authorize(Roles = "Admin,Manager")]
         public async Task<IActionResult> Index()
         {
-            var rentalItems = await _rentalItemsRepository.GetAllAsync();
+            var rentalItems = await _rentalItemsservice.GetAllRentalItemsAsync();
             return View(rentalItems);
         }
 
         // GET Tworzenie
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int pageNumber = 1, int pageSize = 10)
         {
-            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllClients(), "ClientID", "FirstName");
-            ViewBag.CarID = new SelectList(await _carRepository.GetAllAsync(), "CarID", "Make");
+            if (pageNumber < 1)
+            {
+                pageNumber = 1;
+            }
+            var (clients, _) = await _clientService.GetAllClientsAsync(pageNumber, pageSize);
+            ViewBag.ClientID = new SelectList(clients, "ClientID", "FirstName");
+            ViewBag.CarID = new SelectList(await _carService.GetAllCarsAsync(), "CarID", "Make");
             return View();
         }
 
@@ -45,12 +52,14 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _rentalItemsRepository.AddAsync(rentalItem);
+                await _rentalItemsservice.AddRentalItemAsync(rentalItem);
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllClients(), "ClientID", "FirstName", rentalItem.ClientID);
-            ViewBag.CarID = new SelectList(await _carRepository.GetAllAsync(), "CarID", "Make", rentalItem.CarID);
+            var (clients, _) = await _clientService.GetAllClientsAsync(1, 10);
+            ViewBag.ClientID = new SelectList(clients, "ClientID", "FirstName", rentalItem.ClientID);
+            ViewBag.CarID = new SelectList(await _carService.GetAllCarsAsync(), "CarID", "Make", rentalItem.CarID);
+
             return View(rentalItem);
         }
 
@@ -63,14 +72,15 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
                 return NotFound();
             }
 
-            var rentalItem = await _rentalItemsRepository.GetByIdAsync(id.Value);
+            var rentalItem = await _rentalItemsservice.GetRentalItemByIdAsync(id.Value);
             if (rentalItem == null)
             {
                 return NotFound();
             }
 
-            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllClients(), "ClientID", "FirstName", rentalItem.ClientID);
-            ViewBag.CarID = new SelectList(await _carRepository.GetAllAsync(), "CarID", "Make", rentalItem.CarID);
+            var (clients, _) = await _clientService.GetAllClientsAsync(1,10);
+            ViewBag.ClientID = new SelectList(clients, "ClientID", "FirstName", rentalItem.ClientID);
+            ViewBag.CarID = new SelectList(await _carService.GetAllCarsAsync(), "CarID", "Make", rentalItem.CarID);
             return View(rentalItem);
         }
 
@@ -87,12 +97,13 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 
             if (ModelState.IsValid)
             {
-                await _rentalItemsRepository.UpdateAsync(rentalItem);
+                await _rentalItemsservice.UpdateRentalItemAsync(rentalItem);
                 return RedirectToAction(nameof(Index));
             }
             //To jest do listy rozwijanej w widoku dać @Html.DropDownListFor
-            ViewBag.ClientID = new SelectList(await _clientRepository.GetAllClients(), "ClientID", "FirstName", rentalItem.ClientID);
-            ViewBag.CarID = new SelectList(await _carRepository.GetAllAsync(), "CarID", "Make", rentalItem.CarID);
+            var (clients, _) = await _clientService.GetAllClientsAsync(1, 10);
+            ViewBag.ClientID = new SelectList(clients, "ClientID", "FirstName", rentalItem.ClientID);
+            ViewBag.CarID = new SelectList(await _carService.GetAllCarsAsync(), "CarID", "Make", rentalItem.CarID);
             return View(rentalItem);
         }
 
@@ -105,7 +116,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
                 return NotFound();
             }
 
-            var rentalItem = await _rentalItemsRepository.GetByIdAsync(id.Value);
+            var rentalItem = await _rentalItemsservice.GetRentalItemByIdAsync(id.Value);
             if (rentalItem == null)
             {
                 return NotFound();
@@ -119,7 +130,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _rentalItemsRepository.DeleteAsync(id);
+            await _rentalItemsservice.DeleteRentalItemAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

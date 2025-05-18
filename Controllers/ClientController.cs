@@ -11,7 +11,6 @@ using FluentValidation;
 using ASP.NET_Projekt_Wypozyczalnia.Validators;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {

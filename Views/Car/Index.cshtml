@@ -43,10 +43,10 @@
                 {
                     <td>@car.Mileage</td>
                 }
-                @if (!string.IsNullOrEmpty(car.ImagePath))
+               @*  @if (!string.IsNullOrEmpty(car.ImagePath))
                 {
                     <img src="@car.ImagePath" alt="Zdjęcie" width="100" />
-                }
+                } *@
                 <td>
                     @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
                     {
