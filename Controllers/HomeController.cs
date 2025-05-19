@@ -24,11 +24,6 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         {
             return View();
         }
-        [Authorize(Roles = "Admin")]
-        public IActionResult Dashboard()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

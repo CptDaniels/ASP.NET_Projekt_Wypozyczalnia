@@ -33,8 +33,8 @@
                 <td>@item.ExpectedReturnDate.ToShortDateString()</td>
                 <td>@item.RentalStatus</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.RentalID">Edytuj</a> |
-                    <a asp-action="Delete" asp-route-id="@item.RentalID">Usuń</a>
+                    <a asp-action="Edit" asp-route-id="@item.RentalID" class="btn btn-sm btn-primary">Edytuj</a> |
+                    <a asp-action="Delete" asp-route-id="@item.RentalID" class="btn btn-sm btn-danger">Usuń</a>
                 </td>
             </tr>
         }

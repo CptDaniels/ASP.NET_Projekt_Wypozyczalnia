@@ -6,7 +6,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Repositories
 {
     public interface IRentalItemsRepository
     {
-        Task<IQueryable<RentalItems>> GetAllAsync();
+        Task<List<RentalItems>> GetAllAsync();
         Task<RentalItems> GetByIdAsync(int id);
         Task AddAsync(RentalItems rentalItem);
         Task UpdateAsync(RentalItems rentalItem);
