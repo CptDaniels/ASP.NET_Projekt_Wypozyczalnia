@@ -1,66 +1,66 @@
 ﻿@model ASP.NET_Projekt_Wypozyczalnia.Models.Client
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Dodaj klienta";
+    ViewData["Title"] = Localizer["Add client"];
 }
 
-<h1>Dodaj nowego klienta</h1>
+<h1>@Localizer["Add client"]</h1>
 <hr />
+
 <div class="row">
     <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="mb-3">
-                <label asp-for="FirstName" class="form-label"></label>
+                <label asp-for="FirstName" class="form-label">@Localizer["First name"]</label>
                 <input asp-for="FirstName" class="form-control" />
                 <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="LastName" class="form-label"></label>
+                <label asp-for="LastName" class="form-label">@Localizer["Last name"]</label>
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
+                <label asp-for="Email" class="form-label">@Localizer["Email"]</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="PhoneNumber" class="form-label"></label>
+                <label asp-for="PhoneNumber" class="form-label">@Localizer["Phone"]</label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="DocumentNumber" class="form-label"></label>
+                <label asp-for="DocumentNumber" class="form-label">@Localizer["Document number"]</label>
                 <input asp-for="DocumentNumber" class="form-control" />
                 <span asp-validation-for="DocumentNumber" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="DocumentType" class="form-label"></label>
+                <label asp-for="DocumentType" class="form-label">@Localizer["Document type"]</label>
                 <select asp-for="DocumentType" class="form-select" asp-items="Html.GetEnumSelectList<DocumentType>()"></select>
                 <span asp-validation-for="DocumentType" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Address" class="form-label"></label>
+                <label asp-for="Address" class="form-label">@Localizer["Address"]</label>
                 <input asp-for="Address" class="form-control" />
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-success">Zapisz</button>
-            <a asp-action="Index" class="btn btn-secondary ms-2">Wróć</a>
+            <button type="submit" class="btn btn-success">@Localizer["Save"]</button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">@Localizer["Back"]</a>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

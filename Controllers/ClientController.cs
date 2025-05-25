@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ASP.NET_Projekt_Wypozyczalnia.Data;
 using ASP.NET_Projekt_Wypozyczalnia.Models;
-using ASP.NET_Projekt_Wypozyczalnia.Data;
-using Microsoft.EntityFrameworkCore;
 using ASP.NET_Projekt_Wypozyczalnia.Services;
+using ASP.NET_Projekt_Wypozyczalnia.Validators;
 using ASP.NET_Projekt_Wypozyczalnia.ViewModels;
+
+using FluentValidation;
+using Mapster;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using FluentValidation;
-using ASP.NET_Projekt_Wypozyczalnia.Validators;
-using Mapster;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Localization;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
@@ -20,6 +23,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         private readonly IClientService _clientService;
         private readonly IValidator<Client> _clientValidator;
         private readonly ApplicationDbContext _context;
+        //private readonly IStringLocalizer<SharedResource> _localizer;
 
         public ClientController(IClientService clientService, IValidator<Client> clientValidator, ApplicationDbContext context)
         {

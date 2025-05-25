@@ -1,26 +1,27 @@
 ﻿@model ASP.NET_Projekt_Wypozyczalnia.Models.Client
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edytuj klienta";
+    ViewData["Title"] = Localizer["Edit client"];
 }
 
-<h1>Edytuj dane klienta</h1>
+<h1>@Localizer["Edit client"]</h1>
 <hr />
+
 <div class="row">
     <div class="col-md-6">
         <form asp-action="Edit">
             <input type="hidden" asp-for="ClientID" />
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <!-- Reszta identycznie jak w Create, oprócz pola Email (readonly) -->
             <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
+                <label asp-for="Email" class="form-label">@Localizer["Email"]</label>
                 <input asp-for="Email" class="form-control" readonly />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-            <a asp-action="Index" class="btn btn-secondary ms-2">Wróć</a>
+            <button type="submit" class="btn btn-primary">@Localizer["Save changes"]</button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">@Localizer["Back"]</a>
         </form>
     </div>
 </div>

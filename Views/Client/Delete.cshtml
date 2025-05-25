@@ -1,33 +1,35 @@
 ﻿@model ASP.NET_Projekt_Wypozyczalnia.Models.Client
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Usuń klienta";
+    ViewData["Title"] = Localizer["Delete"];
 }
 
-<h1>Czy na pewno chcesz usunąć tego klienta?</h1>
+<h1>@Localizer["Delete confirmation"]</h1>
 <hr />
+
 <dl class="row">
-    <dt class="col-sm-3">Imię</dt>
+    <dt class="col-sm-3">@Localizer["First name"]</dt>
     <dd class="col-sm-9">@Model.FirstName</dd>
 
-    <dt class="col-sm-3">Nazwisko</dt>
+    <dt class="col-sm-3">@Localizer["Last name"]</dt>
     <dd class="col-sm-9">@Model.LastName</dd>
 
-    <dt class="col-sm-3">Email</dt>
+    <dt class="col-sm-3">@Localizer["Email"]</dt>
     <dd class="col-sm-9">@Model.Email</dd>
 
-    <dt class="col-sm-3">Telefon</dt>
+    <dt class="col-sm-3">@Localizer["Phone"]</dt>
     <dd class="col-sm-9">@Model.PhoneNumber</dd>
 
-    <dt class="col-sm-3">Dokument</dt>
+    <dt class="col-sm-3">@Localizer["Document type"] / @Localizer["Document number"]</dt>
     <dd class="col-sm-9">@Model.DocumentType - @Model.DocumentNumber</dd>
 
-    <dt class="col-sm-3">Adres</dt>
+    <dt class="col-sm-3">@Localizer["Address"]</dt>
     <dd class="col-sm-9">@Model.Address</dd>
 </dl>
 
 <form asp-action="Delete">
     <input type="hidden" asp-for="ClientID" />
-    <button type="submit" class="btn btn-danger">Usuń</button>
-    <a asp-action="Index" class="btn btn-secondary ms-2">Anuluj</a>
+    <button type="submit" class="btn btn-danger">@Localizer["Delete"]</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">@Localizer["Cancel"]</a>
 </form>

@@ -1,24 +1,24 @@
 ﻿@model ASP.NET_Projekt_Wypozyczalnia.ViewModels.ClientListViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Lista klientów";
+    ViewData["Title"] = Localizer["Client list"];
 }
-
-<h1>Lista klientów</h1>
+<h1>@Localizer["Client list"]</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success">Dodaj klienta</a>
+    <a asp-action="Create" class="btn btn-success">@Localizer["Add client"]</a>
 </p>
 
 <table class="table table-hover table-bordered">
     <thead class="table-light">
         <tr>
-            <th>Imię i nazwisko</th>
-            <th>Email</th>
-            <th>Telefon</th>
-            <th>Dokument</th>
-            <th>Adres</th>
-            <th>Akcje</th>
+            <th>@Localizer["Full name"]</th>
+            <th>@Localizer["Email"]</th>
+            <th>@Localizer["Phone"]</th>
+            <th>@Localizer["Document"]</th>
+            <th>@Localizer["Address"]</th>
+            <th>@Localizer["Actions"]</th>
         </tr>
     </thead>
     <tbody>
@@ -31,8 +31,8 @@
                 <td>@item.DocumentInfo</td>
                 <td>@item.Address</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ClientID" class="btn btn-sm btn-primary">Edytuj</a>
-                    <a asp-action="Delete" asp-route-id="@item.ClientID" class="btn btn-sm btn-danger">Usuń</a>
+                    <a asp-action="Edit" asp-route-id="@item.ClientID" class="btn btn-sm btn-primary">@Localizer["Edit"]</a>
+                    <a asp-action="Delete" asp-route-id="@item.ClientID" class="btn btn-sm btn-danger">@Localizer["Delete"]</a>
                 </td>
             </tr>
         }
@@ -42,13 +42,13 @@
 <nav>
     <ul class="pagination">
         <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
-            <a class="page-link" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-pageSize="@Model.PageSize">Poprzednia</a>
+            <a class="page-link" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-pageSize="@Model.PageSize">@Localizer["Previous"]</a>
         </li>
         <li class="page-item disabled">
-            <span class="page-link">Strona @Model.PageNumber z @Model.TotalPages</span>
+            <span class="page-link">@Localizer["Page"] @Model.PageNumber @Localizer["of"] @Model.TotalPages</span>
         </li>
         <li class="page-item @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
-            <a class="page-link" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-pageSize="@Model.PageSize">Następna</a>
+            <a class="page-link" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-pageSize="@Model.PageSize">@Localizer["Next"]</a>
         </li>
     </ul>
 </nav>
