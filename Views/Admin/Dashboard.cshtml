@@ -1,0 +1,70 @@
+﻿@using ASP.NET_Projekt_Wypozyczalnia.ViewModels
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@model DashboardViewModel
+
+<h2>Zarządzanie użytkownikami</h2>
+
+<form asp-action="CreateUser" method="post">
+    <div class="form-group">
+        <input asp-for="NewUserEmail" class="form-control" placeholder="Email użytkownika" />
+        <input asp-for="NewUserPassword" class="form-control mt-2" placeholder="Hasło" type="password" />
+        <button type="submit" class="btn btn-primary mt-2">Dodaj użytkownika</button>
+    </div>
+</form>
+
+<hr />
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    @string.Join(", ", await Context.RequestServices
+                             .GetService<UserManager<IdentityUser>>()
+                             .GetRolesAsync(user))
+                </td>
+                <td>
+                    <form asp-action="DeleteUser" method="post" style="display:inline-block;">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i> Usuń
+                        </button>
+                    </form>
+
+                    <form asp-action="AssignRole" method="post" class="d-inline-block ml-2">
+                        <input type="hidden" name="SelectedUserId" value="@user.Id" />
+                        <div class="input-group input-group-sm">
+                            <select name="SelectedRole" class="custom-select">
+                                @foreach (var role in Model.Roles)
+                                {
+                                    <option value="@role">@role</option>
+                                }
+                            </select>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Przypisz
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

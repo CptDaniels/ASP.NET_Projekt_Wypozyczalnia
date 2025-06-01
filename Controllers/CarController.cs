@@ -35,10 +35,20 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([Bind("CarID,Make,Model,Year,RegistrationNumber,CarStatus,Mileage,InspectionDate,InsuranceDate,EngineCapacity,FuelType,CarPicture")] Car car)
+        public async Task<IActionResult> Create([Bind("CarID,Make,Model,Year,RegistrationNumber,CarStatus,Mileage,InspectionDate,InsuranceDate,EngineCapacity,FuelType")] Car car)
         {
             if (ModelState.IsValid)
             {
+                //if (car.ImageFile != null && car.ImageFile.Length > 0)
+                //{
+                //    var fileName = Path.GetFileName(car.ImageFile.FileName);
+                //    var filePath = Path.Combine("wwwroot/images", fileName);
+
+                //    using var stream = new FileStream(filePath, FileMode.Create);
+                //    await car.ImageFile.CopyToAsync(stream);
+
+                //    car.ImagePath = "/images/" + fileName;
+                //}
                 await _carService.AddCarAsync(car);
                 return RedirectToAction(nameof(Index));
             }

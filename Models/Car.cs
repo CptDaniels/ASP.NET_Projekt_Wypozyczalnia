@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Models
 {
@@ -35,6 +36,10 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Models
     }
     public class Car
     {
+        public Car()
+        {
+            RentalItems = new List<RentalItems>();
+        }
         [Key]
         public int CarID { get; set; }
     
@@ -76,10 +81,14 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Models
         [Required]
         [Display(Name = "Rodzaj Paliwa")]
         public FuelType FuelType { get; set; }
-        [Display(Name = "Zdjęcie Samochodu")]
-        public string CarPicture { get; set; }
+
+        //[Display(Name = "Zdjęcie Samochodu")]
+        //public string? ImagePath { get; set; }
+
+        //[NotMapped]
+        //public IFormFile? ImageFile { get; set; }
+
         //Nawigacja
-    
         [Display(Name = "Pozycje Wypożyczenia")]
         public ICollection<RentalItems> RentalItems { get; set; }
     }

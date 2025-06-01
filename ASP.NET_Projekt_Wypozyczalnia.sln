@@ -5,6 +5,8 @@ VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP.NET_Projekt_Wypozyczalnia", "ASP.NET_Projekt_Wypozyczalnia.csproj", "{494CE710-0D61-4B27-A533-EF41EC5AE84F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP.NET_Projekt_Wypozyczalnia.Testy", "..\ASP.NET_Projekt_Wypozyczalnia.Testy\ASP.NET_Projekt_Wypozyczalnia.Testy.csproj", "{518F2719-002F-4FCC-8689-8C606137F98F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{494CE710-0D61-4B27-A533-EF41EC5AE84F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{494CE710-0D61-4B27-A533-EF41EC5AE84F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{494CE710-0D61-4B27-A533-EF41EC5AE84F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{518F2719-002F-4FCC-8689-8C606137F98F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{518F2719-002F-4FCC-8689-8C606137F98F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{518F2719-002F-4FCC-8689-8C606137F98F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{518F2719-002F-4FCC-8689-8C606137F98F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

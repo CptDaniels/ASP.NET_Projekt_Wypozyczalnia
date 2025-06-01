@@ -1,0 +1,114 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Panel administratora</title>
+
+    <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/sb-admin-2.min.css" rel="stylesheet" />
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Admin" asp-action="Dashboard">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">Admin</div>
+            </a>
+
+            <hr class="sidebar-divider my-0" />
+
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Admin" asp-action="Dashboard">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider" />
+
+            @if (User.IsInRole("Admin") || User.IsInRole("Manager"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Car" asp-action="Index">
+                        <i class="fas fa-car"></i>
+                        <span>Samochody</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Client" asp-action="Index">
+                        <i class="fas fa-users"></i>
+                        <span>Klienci</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="RentalItems" asp-action="Index">
+                        <i class="fas fa-handshake"></i>
+                        <span>Wypożyczenia</span>
+                    </a>
+                </li>
+            }
+
+            <hr class="sidebar-divider d-none d-md-block" />
+        </ul>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    @User.Identity?.Name
+                                </span>
+                                <i class="fas fa-user-circle fa-lg"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                 aria-labelledby="userDropdown">
+                                <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="dropdown-item">
+                                    <button type="submit" class="btn btn-link text-left w-100 p-0">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Wyloguj
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </div>
+
+            <footer class="sticky-footer bg-white mt-4">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; ASP.NET Wypożyczalnia 2025</span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="~/js/sb-admin-2.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

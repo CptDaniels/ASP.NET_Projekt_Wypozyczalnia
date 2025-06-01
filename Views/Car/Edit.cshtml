@@ -1,0 +1,79 @@
+﻿@model ASP.NET_Projekt_Wypozyczalnia.Models.Car
+
+@{
+    ViewData["Title"] = "Edytuj Samochód";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" enctype="multipart/form-data" method="post">
+    <input type="hidden" asp-for="CarID" />
+
+    <div class="form-group">
+        <label asp-for="Make"></label>
+        <input asp-for="Make" class="form-control" />
+        <span asp-validation-for="Make" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Model"></label>
+        <input asp-for="Model" class="form-control" />
+        <span asp-validation-for="Model" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Year"></label>
+        <input asp-for="Year" class="form-control" />
+        <span asp-validation-for="Year" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RegistrationNumber"></label>
+        <input asp-for="RegistrationNumber" class="form-control" />
+        <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CarStatus"></label>
+        <select asp-for="CarStatus" class="form-control" asp-items="Html.GetEnumSelectList<CarStatus>()"></select>
+        <span asp-validation-for="CarStatus" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Mileage"></label>
+        <input asp-for="Mileage" class="form-control" />
+        <span asp-validation-for="Mileage" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="InspectionDate"></label>
+        <input asp-for="InspectionDate" type="date" class="form-control" />
+        <span asp-validation-for="InspectionDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="InsuranceDate"></label>
+        <input asp-for="InsuranceDate" type="date" class="form-control" />
+        <span asp-validation-for="InsuranceDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EngineCapacity"></label>
+        <input asp-for="EngineCapacity" class="form-control" />
+        <span asp-validation-for="EngineCapacity" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FuelType"></label>
+        <select asp-for="FuelType" class="form-control" asp-items="Html.GetEnumSelectList<FuelType>()"></select>
+        <span asp-validation-for="FuelType" class="text-danger"></span>
+    </div>
+
+    @* <div class="form-group">
+        <label asp-for="ImageFile" class="control-label">Zdjęcie</label>
+        <input asp-for="ImageFile" type="file" class="form-control" />
+    </div> *@
+
+    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+</form>

@@ -30,10 +30,6 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CarID"));
 
-                    b.Property<string>("CarPicture")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("CarStatus")
                         .HasColumnType("int");
 

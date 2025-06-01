@@ -14,7 +14,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Services
             _rentalItemsRepository = rentalItemsRepository;
         }
 
-        public async Task<IQueryable<RentalItems>> GetAllRentalItemsAsync()
+        public async Task<List<RentalItems>> GetAllRentalItemsAsync()
         {
             return await _rentalItemsRepository.GetAllAsync();
         }
