@@ -1,9 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Mvc.Razor
-
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,78 +12,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ASP.NET_Projekt_Wypozyczalnia</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/sbadmin/css/sb-admin-2.min.css" rel="stylesheet" />
+    <link href="~/sbadmin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ASP.NET_Projekt_Wypozyczalnia.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark shadow-sm mb-4">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ASP.NET_Projekt_Wypozyczalnia</a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Wypożyczalnia</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <!-- Nawigacja -->
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Strona główna</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Prywatność</a>
+                            <a class="nav-link" asp-controller="Car" asp-action="Index">@Localizer["Cars"]</a>
                         </li>
-
                         @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Client" asp-action="Index">Klienci</a>
+                                <a class="nav-link" asp-controller="Client" asp-action="Index">@Localizer["Clients"]</a>
                             </li>
-                        }
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cars" asp-action="Index">Samochody</a>
-                        </li>
-
-                        @if (User.IsInRole("Manager") || User.IsInRole("Admin"))
-                        {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="RentalItems" asp-action="Index">Pozycje Wypożyczeń</a>
+                                <a class="nav-link" asp-controller="RentalItems" asp-action="Index">@Localizer["Rentals"]</a>
                             </li>
                         }
                     </ul>
 
-                    <!-- Logowanie -->
-                    <ul class="navbar-nav ms-auto">
-                        @if (SignInManager.IsSignedIn(User))
+                    <ul class="navbar-nav ms-auto d-flex flex-row gap-2 align-items-center">
+                        @{
+                            var currentCulture = Context.Request.Query["culture"].ToString() ?? "pl";
+                            var cultures = new Dictionary<string, string>
+                                                {
+                                                { "pl", "🇵🇱 Polski" },
+                                                { "en", "🇬🇧 English" },
+                                                { "de", "🇩🇪 Deutsch" }
+                                                };
+                        }
+
+                        <form method="get" class="d-inline-block ms-3">
+                            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                            <select name="culture" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto; display: inline;">
+                                @foreach (var culture in cultures)
+                                {
+                                    <option value="@culture.Key" selected="@(culture.Key == currentCulture ? "selected" : null)">
+                                        @culture.Value
+                                    </option>
+                                }
+                            </select>
+                        </form>
+
+                        @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index">
-                                    Witaj, @User.Identity.Name!
+                                <a class="nav-link" asp-controller="Home" asp-action="Dashboard">
+                                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                                    <span>@Localizer["Dashboard"]</span>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-outline-danger ms-2">Wyloguj</button>
+                        }
+
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item text-white">@Localizer["Welcome"], @UserManager.GetUserName(User)!</li>
+                            <li>
+                                <form asp-area="Identity" asp-page="/Account/Logout" method="post">
+                                    <button type="submit" class="btn btn-outline-light btn-sm">@Localizer["Logout"]</button>
                                 </form>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="btn btn-outline-primary me-2" asp-area="Identity" asp-page="/Account/Login">Logowanie</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">Rejestracja</a>
-                            </li>
+                            <li><a class="btn btn-outline-light btn-sm" asp-area="Identity" asp-page="/Account/Login">@Localizer["Login"]</a></li>
+                            <li><a class="btn btn-light btn-sm" asp-area="Identity" asp-page="/Account/Register">@Localizer["Register"]</a></li>
                         }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -91,13 +106,13 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - ASP.NET_Projekt_Wypozyczalnia - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - ASP.NET_Projekt_Wypożyczalnia - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @* @await RenderSectionAsync("Scripts", required: false) *@
     @RenderSection("Scripts", required: false)
 </body>
 </html>

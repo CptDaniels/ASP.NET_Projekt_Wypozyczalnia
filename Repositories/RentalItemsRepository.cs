@@ -15,14 +15,20 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Repositories
             _context = context;
         }
 
-        public async Task<IQueryable<RentalItems>> GetAllAsync()
+        public async Task<List<RentalItems>> GetAllAsync()
         {
-            return await Task.FromResult(_context.RentalItems.AsQueryable());
+            return await _context.RentalItems
+            .Include(r => r.Client)
+            .Include(r => r.Car)
+            .ToListAsync();
         }
 
-        public async Task<RentalItems> GetByIdAsync(int id)
+        public async Task<RentalItems?> GetByIdAsync(int id)
         {
-            return await _context.RentalItems.FindAsync(id);
+            return await _context.RentalItems
+            .Include(r => r.Client)
+            .Include(r => r.Car)
+            .FirstOrDefaultAsync(r => r.RentalID == id);
         }
 
         public async Task AddAsync(RentalItems rentalItem)
@@ -39,12 +45,13 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var rentalItem = await _context.RentalItems.FindAsync(id);
-            if (rentalItem != null)
-            {
+            var rentalItem = await _context.RentalItems
+            .Include(r => r.Client)
+            .Include(r => r.Car)
+            .FirstOrDefaultAsync(r => r.RentalID == id);
+
                 _context.RentalItems.Remove(rentalItem);
                 await _context.SaveChangesAsync();
             }
         }
-    }
 }
