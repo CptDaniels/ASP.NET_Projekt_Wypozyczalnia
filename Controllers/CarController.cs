@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ASP.NET_Projekt_Wypozyczalnia.Models;
+﻿using ASP.NET_Projekt_Wypozyczalnia.Models;
 using ASP.NET_Projekt_Wypozyczalnia.Services;
-using Microsoft.AspNetCore.Identity;
+using ASP.NET_Projekt_Wypozyczalnia.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
@@ -20,9 +21,42 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var cars = await _carService.GetAllCarsAsync();
-            return View(cars);
+            var allCars = await _carService.GetAllCarsAsync();
+
+            var fullViewModels = allCars.Select(car => new CarViewModel
+            {
+                CarID = car.CarID,
+                Make = car.Make,
+                Model = car.Model,
+                Year = car.Year,
+                RegistrationNumber = car.RegistrationNumber,
+                CarStatus = car.CarStatus,
+                Mileage = car.Mileage,
+                InspectionDate = car.InspectionDate,
+                InsuranceDate = car.InsuranceDate,
+                EngineCapacity = car.EngineCapacity,
+                FuelType = car.FuelType
+            }).ToList();
+
+            var publicViewModels = allCars.Select(car => new CarPublicViewModel
+            {
+                Make = car.Make,
+                Model = car.Model,
+                Year = car.Year,
+                CarStatus = car.CarStatus,
+                FuelType = car.FuelType,
+                Mileage = car.Mileage
+            }).ToList();
+
+            var viewModel = new CarIndexViewModel
+            {
+                AllCars = fullViewModels,
+                PublicCars = publicViewModels
+            };
+
+            return View(viewModel);
         }
+
 
         // GET Tworzenie
         [Authorize(Roles = "Admin")]

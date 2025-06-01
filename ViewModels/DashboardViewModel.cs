@@ -16,5 +16,7 @@ namespace ASP.NET_Projekt_Wypozyczalnia.ViewModels
 
         public string SelectedUserId { get; set; }
         public string SelectedRole { get; set; }
+
+        public Dictionary<string, List<string>> UserRoles { get; set; } = new Dictionary<string, List<string>>();
     }
 }

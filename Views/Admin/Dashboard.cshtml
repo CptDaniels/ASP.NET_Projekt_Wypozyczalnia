@@ -35,9 +35,14 @@
             <tr>
                 <td>@user.Email</td>
                 <td>
-                    @string.Join(", ", await Context.RequestServices
-                             .GetService<UserManager<IdentityUser>>()
-                             .GetRolesAsync(user))
+                    @if (Model.UserRoles.ContainsKey(user.Id) && Model.UserRoles[user.Id].Any())
+                    {
+                        @string.Join(", ", Model.UserRoles[user.Id])
+                    }
+                    else
+                    {
+                        <span>Brak ról</span>
+                    }
                 </td>
                 <td>
                     <form asp-action="DeleteUser" method="post" style="display:inline-block;">

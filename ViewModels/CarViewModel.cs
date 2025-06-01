@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using ASP.NET_Projekt_Wypozyczalnia.Models;
+
 
 namespace ASP.NET_Projekt_Wypozyczalnia.ViewModels
 {
@@ -48,44 +50,5 @@ namespace ASP.NET_Projekt_Wypozyczalnia.ViewModels
         [Required(ErrorMessage = "Rodzaj paliwa jest wymagany")]
         [Display(Name = "Rodzaj Paliwa")]
         public FuelType FuelType { get; set; }
-
-        [Display(Name = "Zdjęcie Samochodu")]
-        public string CarPicture { get; set; }
-
-        [Display(Name = "Liczba Wypożyczeń")]
-        public int RentalCount { get; set; }
-
-    }
-    public enum CarStatus
-    {
-        [Display(Name = "Sprawny")]
-        Operational,
-
-        [Display(Name = "W Naprawie")]
-        UnderRepair,
-
-        [Display(Name = "Uszkodzony")]
-        Damaged,
-
-        [Display(Name = "Niesprawny")]
-        OutOfService
-    }
-
-    public enum FuelType
-    {
-        [Display(Name = "Olej napędowy")]
-        Diesel,
-
-        [Display(Name = "Benzyna")]
-        Gasoline,
-
-        [Display(Name = "Gaz LPG")]
-        LPG,
-
-        [Display(Name = "Elektryczny")]
-        Electric,
-
-        [Display(Name = "Gaz CNG")]
-        CNG
     }
 }

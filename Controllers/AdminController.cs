@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ASP.NET_Projekt_Wypozyczalnia.Services;
+using ASP.NET_Projekt_Wypozyczalnia.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ASP.NET_Projekt_Wypozyczalnia.Services;
-using ASP.NET_Projekt_Wypozyczalnia.ViewModels;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
 {
@@ -36,12 +37,22 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
             var users = _userManager.Users.ToList();
             var roles = _roleManager.Roles.Select(r => r.Name).ToList();
 
+             var userRoles = new Dictionary<string, List<string>>();
+
+             foreach (var user in users)
+            {
+                var userRoleList = await _userManager.GetRolesAsync(user);
+                userRoles[user.Id] = userRoleList.ToList();
+                Debug.WriteLine($"Użytkownik: {user.Email}, Role: {string.Join(", ", userRoleList)}");
+            }
+
             var model = new DashboardViewModel
             {
                 CarCount = cars.Count(),
                 ClientCount = clients.Count(),
                 Users = users,
-                Roles = roles
+                Roles = roles,
+                UserRoles = userRoles
             };
 
             return View(model);
@@ -80,15 +91,32 @@ namespace ASP.NET_Projekt_Wypozyczalnia.Controllers
         public async Task<IActionResult> AssignRole(DashboardViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.SelectedUserId);
+
             if (user != null && !string.IsNullOrEmpty(model.SelectedRole))
             {
-                if (!await _userManager.IsInRoleAsync(user, model.SelectedRole))
+                // 1. Pobierz wszystkie role użytkownika
+                var currentRoles = await _userManager.GetRolesAsync(user);
+
+                // 2. Usuń je wszystkie
+                if (currentRoles.Any())
                 {
-                    await _userManager.AddToRoleAsync(user, model.SelectedRole);
+                    var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                    if (!removeResult.Succeeded)
+                    {
+                        ModelState.AddModelError(string.Empty, "Nie udało się usunąć aktualnych ról.");
+                        return RedirectToAction(nameof(Dashboard));
+                    }
+                }
+
+                // 3. Dodaj nową rolę
+                var addResult = await _userManager.AddToRoleAsync(user, model.SelectedRole);
+                if (!addResult.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Nie udało się przypisać nowej roli.");
                 }
             }
 
             return RedirectToAction(nameof(Dashboard));
-        }
+}
     }
 }
