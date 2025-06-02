@@ -23,7 +23,7 @@ builder.Services.AddControllersWithViews(
     .AddDataAnnotationsLocalization();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PredatorConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ThinkpadConnection")));
 //"ThinkpadConnection"   "PredatorConnection"
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
